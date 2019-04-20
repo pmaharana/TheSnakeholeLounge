@@ -4,6 +4,7 @@ const express                 = require('express'),
 
 const adminRoutes             = require('./routes/admin'),
       shopRoutes              = require('./routes/shop'),
+      cartRoutes              = require('./routes/cart'),
       errorController         = require('./controllers/error');
 
 const app                     = express();
@@ -17,6 +18,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(shopRoutes);
+app.use(cartRoutes);
 app.use('/admin', adminRoutes);
 
 app.use(errorController.getErrorPage);
