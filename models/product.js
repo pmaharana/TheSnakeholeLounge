@@ -22,17 +22,25 @@ const generateGuid = () => {
 }
 
 module.exports = class Product {
-  constructor(title, imageUrl, price, description) {
+  constructor(title, imageUrl, price, description, id = null) {
     this.title = title;
     this.imageUrl = imageUrl;
     this.price = price;
     this.description = description;
+    this.id = id;
   }
 
   save() {
-    this.id = crypto.randomBytes(16).toString('hex');
     getProductsFromFile(products => {
-      products.push(this);
+      if (this.id) {
+        const existingIndex = products.findIndex(prod => prod.id === this.id);        
+        if (existingIndex === -1) return;
+        products[existingIndex] = this;
+      } else {
+        this.id = crypto.randomBytes(16).toString('hex');
+        products.push(this);
+      }
+      
       fs.writeFile(p, JSON.stringify(products), (err) => {
         console.log(err);
       });
