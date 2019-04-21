@@ -6,7 +6,8 @@ const express                 = require('express'),
 const adminRoutes             = require('./routes/admin'),
       shopRoutes              = require('./routes/shop'),
       cartRoutes              = require('./routes/cart'),
-      errorController         = require('./controllers/error');
+      errorController         = require('./controllers/error'),
+      db                      = require('./util/database');
 
 const app                     = express();
 
@@ -14,6 +15,10 @@ const app                     = express();
 app.set('view engine', 'ejs');
 // default for views already set to view folder. this is being explicit
 app.set('views', 'views');
+
+db.execute('SELECT * FROM products')
+  .then((result) => console.log(result))
+  .catch(err => console.log(err));
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, 'public')));
