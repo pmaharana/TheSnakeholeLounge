@@ -1,10 +1,12 @@
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
+const fs      = require('fs'),
+      path    = require('path'),
+      crypto  = require('crypto');
 
 const p = path.join(path.dirname(process.mainModule.filename), 
 'data', 
 'products.json');
+
+const Cart = require('./cart');
 
 const getProductsFromFile = cb => {
   fs.readFile(p, (err, fileContent) => {
@@ -25,7 +27,7 @@ module.exports = class Product {
   constructor(title, imageUrl, price, description, id = null) {
     this.title = title;
     this.imageUrl = imageUrl;
-    this.price = price;
+    this.price = Number(price);
     this.description = description;
     this.id = id;
   }
@@ -40,7 +42,7 @@ module.exports = class Product {
         this.id = crypto.randomBytes(16).toString('hex');
         products.push(this);
       }
-      
+
       fs.writeFile(p, JSON.stringify(products), (err) => {
         console.log(err);
       });
@@ -55,6 +57,17 @@ module.exports = class Product {
     getProductsFromFile(products => {
       const product = products.find(p => p.id === productId);
       cb(product);
+    });
+  }
+
+  static deleteProduct(productId) {
+    getProductsFromFile(products => {
+      let productToDelete = products.find(prod => prod.id === productId);
+      products = products.filter(prod => prod.id !== productId);
+
+      fs.writeFile(p, JSON.stringify(products), (err) => {
+        if (!err) Cart.deleteProduct(productId, productToDelete.price);
+      });
     });
   }
 }

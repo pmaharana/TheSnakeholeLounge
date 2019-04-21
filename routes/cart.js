@@ -9,4 +9,6 @@ router.get('/cart', cartController.getCart);
 
 router.post('/cart', cartController.addToCart);
 
+router.put('/cart/removeProduct/:productId', cartController.removeProductFromCart);
+
 module.exports = router;

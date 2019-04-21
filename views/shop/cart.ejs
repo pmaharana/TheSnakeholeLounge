@@ -4,5 +4,20 @@
     <%- include('../includes/navigation.ejs') %>
   <main>
     <h1>THIS IS EVERYTHGIN U BOGUHT</h1>
+    <% if (cart && cart.products && cart.products.length > 0) { %>
+      <ul>
+          <% cart.products.forEach(product => { %>
+            <li>
+              <p><%= product.title %> (x <%= product.quantity %>)</p>
+              <form action="/cart/removeProduct/<%= product.id %>?_method=PUT" method="POST">
+                <button class="btn" type="submit">Delete</button>
+              </form>
+            </li>
+          <% })%>
+      </ul>
+      <h1>Total Price: <%= cart.totalPrice %></h1>
+    <% } else {%>
+      <h2>No products in cart!</h2>
+    <% }%>
   </main>
   <%- include('../includes/end.ejs') %>

@@ -1,17 +1,31 @@
-const Cart = require('../models/cart');
+const Cart    = require('../models/cart'),
+      Product = require('../models/product');
 
 exports.getCart = (req, res, next) => {
-  res.render('shop/cart', {
-    path: '/cart',
-    pageTitle: 'Your Cart'
+  Cart.getCart(cart => {
+    res.render('shop/cart', {
+      path: '/cart',
+      pageTitle: 'Your Cart',
+      cart: cart
+    });
   });
 }
 
 exports.addToCart = (req, res, next) => {
-  // const productId = req.body.productId;
-  // const title = req.body.title;
-  // const price = Number(req.body.price);
   const productModel = req.body;
   Cart.addProduct(productModel);
   res.redirect('/');
+}
+
+exports.removeProductFromCart = (req, res, next) => {
+  const productId = req.params.productId;
+  Product.getById(productId, (product) => {
+    Cart.deleteProduct(product.id, product.price, (cart) => {
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your Cart',
+        cart: cart
+      });
+    });
+  })
 }

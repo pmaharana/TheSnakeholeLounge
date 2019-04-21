@@ -1,6 +1,7 @@
 const express                 = require('express'),
       path                    = require('path'),
-      bodyParser              = require('body-parser');      
+      bodyParser              = require('body-parser'),
+      methodOverride          = require('method-override');      
 
 const adminRoutes             = require('./routes/admin'),
       shopRoutes              = require('./routes/shop'),
@@ -16,6 +17,7 @@ app.set('views', 'views');
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(methodOverride('_method'));
 
 app.use(shopRoutes);
 app.use(cartRoutes);
