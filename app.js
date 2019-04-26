@@ -10,7 +10,9 @@ const adminRoutes             = require('./routes/admin'),
       sequelize               = require('./util/database');
 
 const Product                 = require('./models/product'),
-      User                    = require('./models/user');
+      User                    = require('./models/user'),
+      Cart                    = require('./models/cart'),
+      CartItem                = require('./models/cart-item');
 
 const app                     = express();
 
@@ -40,9 +42,13 @@ app.use(errorController.getErrorPage);
 
 Product.belongsTo(User, {constraints: true, onDelete: 'CASCADE'});
 User.hasMany(Product); // this is optional but it's good to define bi-directionally
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, {through: CartItem});
+Product.belongsToMany(Cart, {through: CartItem});
 
 sequelize
-// .sync({force: true})
+  // .sync({force: true})
   .sync()
   .then(result => {
     return User.findByPk(1);
@@ -50,6 +56,11 @@ sequelize
   .then(user => {
     if (!user) return User.create({username: 'admin', email: 'pranyewest@test.com'}); 
     return Promise.resolve(user);
+  })
+  .then(user => user.getCart())
+  .then(cart => {
+    if (!cart) return user.createCart();
+    return Promise.resolve(cart);
   })
   .then(result => app.listen(3000))
   .catch(error => console.log(error));
