@@ -12,7 +12,9 @@ const adminRoutes             = require('./routes/admin'),
 const Product                 = require('./models/product'),
       User                    = require('./models/user'),
       Cart                    = require('./models/cart'),
-      CartItem                = require('./models/cart-item');
+      CartItem                = require('./models/cart-item'),
+      Order                   = require('./models/order'),
+      OrderItem               = require('./models/order-item');
 
 const app                     = express();
 
@@ -46,6 +48,10 @@ User.hasOne(Cart);
 Cart.belongsTo(User);
 Cart.belongsToMany(Product, {through: CartItem});
 Product.belongsToMany(Cart, {through: CartItem});
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(Product, { through: OrderItem} );
+Product.belongsToMany(Order, { through: OrderItem }); // also optinal to include both
 
 sequelize
   // .sync({force: true})
@@ -57,10 +63,13 @@ sequelize
     if (!user) return User.create({username: 'admin', email: 'pranyewest@test.com'}); 
     return Promise.resolve(user);
   })
-  .then(user => user.getCart())
-  .then(cart => {
-    if (!cart) return user.createCart();
-    return Promise.resolve(cart);
+  .then(user => {
+    return user.getCart()
+      .then(cart => {
+        if (!cart) return user.createCart();
+        return Promise.resolve(cart);
+      })
+      .catch(error => console.log(error));
   })
   .then(result => app.listen(3000))
   .catch(error => console.log(error));
