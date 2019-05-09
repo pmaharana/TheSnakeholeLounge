@@ -7,14 +7,14 @@ const shopController = require('../controllers/shop');
 
 router.get('/', shopController.getIndex);
 
-router.get('/products', shopController.getProducts);
+// router.get('/products', shopController.getProducts);
 
-router.get('/products/:productId', shopController.getProduct);
+// router.get('/products/:productId', shopController.getProduct);
 
-router.get('/checkout', shopController.getCheckout);
+// router.get('/checkout', shopController.getCheckout);
 
-router.get('/order', shopController.getOrder);
+// router.get('/order', shopController.getOrder);
 
-router.post('/order', shopController.addOrder);
+// router.post('/order', shopController.addOrder);
 
 module.exports = router;
