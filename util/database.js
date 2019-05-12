@@ -8,12 +8,6 @@ let _db;
 
 const mongoConnect = (callback) => {
   const uri = process.env.MONGO_CONNECTION;
-  // MongoClient.connect(uri, { useNewUrlParser: true }, (error, client) => {
-  //   if (error) throw error;
-  //   _db = client.db(DATABASE_NAME);
-  //   console.log('connected to' + DATABASE_NAME);
-  //   callback(client);
-  // })
   const mongoClient = new MongoClient(uri, { useNewUrlParser: true });
 
   mongoClient.connect()
@@ -32,6 +26,9 @@ const getDb = () => {
   throw 'No database found';
 }
 
+const generateMongoId = (id) => new mongodb.ObjectID(id);
+
 exports.mongoConnect = mongoConnect;
 exports.getDb = getDb;
+exports.generateMongoId = generateMongoId;
 
